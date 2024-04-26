@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.UserMapper">
+
+    <!--完成实体类与表中列名的映射-->
+    <resultMap id="usermap" type="pojo.User">
+        <id property="userId" column="user_id"/>
+        <id property="cardType" column="card_type"/>
+        <id property="cardNo" column="card_no"/>
+        <id property="userName" column="user_name"/>
+        <id property="userSex" column="user_sex"/>
+        <id property="userAge" column="user_age"/>
+        <id property="userRole" column="user_role"/>
+    </resultMap>
+
+    <!--定义全部类名-->
+    <sql id="allColumns">
+        user_id,card_type,card_no,user_name,user_sex,user_age,user_role
+    </sql>
+
+    <!--sql标签中的语句可以重复使用，只要使用<include refid = >就行-->
+    <select id="selectUserPage" resultMap="usermap">
+        select <include refid="allColumns"></include>
+        from user
+        <where>
+            <if test="userName != null and userName != ''">
+                and user_name like concat('%',#{userName},'%')
+            </if>
+            <if test="userSex != null and userSex != ''">
+                and user_sex = #{userSex}
+            </if>
+        </where>
+        limit #{startRow},5
+    </select>
+
+    <!--
+        int insert
+    -->
+    <insert id="createUser" parameterType="pojo.User">
+        insert into user values (#{userId},#{cardType},#{cardNo},#{userName},#{userSex},#{userAge},#{userRole})
+    </insert>
+
+    <delete id="deleteUserById" parameterType="string">
+        delete from user where user_id = #{userId}
+    </delete>
+
+    <select id="getRowCount" resultType="int">
+        select count(*)
+        from user
+        <where>
+            <if test="userName != null and userName != ''">
+                and user_name like concat('%',#{userName},'%')
+            </if>
+            <if test="userSex != null and userSex != ''">
+                and user_sex = #{userSex}
+            </if>
+        </where>
+    </select>
+</mapper>

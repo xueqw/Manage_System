@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--添加包扫描-->
+    <context:component-scan base-package="service.impl"/>
+    <!--添加事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--切记：配置数据源-->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--配置事务切面-->
+    <tx:advice id="myadvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="*select*" read-only="false"/>
+            <tx:method name="*find*" read-only="false"/>
+            <tx:method name="*research*" read-only="false"/>
+            <tx:method name="*get*" read-only="false"/>
+            <tx:method name="*insert*" read-only="false"/>
+            <tx:method name="*add*" read-only="false"/>
+            <tx:method name="*save*" read-only="false"/>
+            <tx:method name="*set*" read-only="false"/>
+            <tx:method name="*update*" read-only="false"/>
+            <tx:method name="*change*" read-only="false"/>
+            <tx:method name="*modify*" read-only="false"/>
+            <tx:method name="*delete*" read-only="false"/>
+            <tx:method name="*drop*" read-only="false"/>
+            <tx:method name="*remove*" read-only="false"/>
+            <tx:method name="*clear*" read-only="false"/>
+            <tx:method name="*" read-only="false"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--配置切入点+绑定-->
+    <aop:config>
+        <aop:pointcut id="mycut" expression="execution(* service.impl.*.*(..))"/>
+        <aop:advisor advice-ref="myadvice" pointcut-ref="mycut"/>
+    </aop:config>
+</beans>
